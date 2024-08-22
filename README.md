@@ -3,7 +3,7 @@
 This project is the final project of Bob Ziroll's free React course.  
 Made from scratch by me using HTML, CSS, and ReactJS.
 
-![main screen](https://github.com/georgevigu/quizzical/blob/main/quizzical-menu.png?raw=true)
+![main screen](https://github.com/georgevigu/quizzical/blob/main/quzzical-menu.png?raw=true)
 
 The app takes 5 random questions from the Open Trivia Databse API.
 
