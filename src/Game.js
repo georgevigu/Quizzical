@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 
 export default function Game() {
   const [questions, setQuestions] = React.useState([]);
+  const [endGame, setEndGame] = React.useState(false);
 
   React.useEffect(() => {
     async function fetchTrivia() {
@@ -44,10 +45,15 @@ export default function Game() {
     setQuestions((prevQuestions) =>
       prevQuestions.map((q) =>
         q.id === questionId
-          ? {
-              ...q,
-              selectedIndex: selectedIndex,
-            }
+          ? q.selectedIndex === selectedIndex
+            ? {
+                ...q,
+                selectedIndex: -1,
+              }
+            : {
+                ...q,
+                selectedIndex: selectedIndex,
+              }
           : q
       )
     );
@@ -55,11 +61,16 @@ export default function Game() {
 
   const questionElements = questions.map((q) => {
     const answerElements = q.allAnswers.map((answer, index) => {
+      let correctIndex;
+      if (answer === q.correct_answer) {
+        correctIndex = index;
+      }
+
       return (
         <button
           key={index} // Use index as key since answers are shuffled
           className={`btn-answer ${
-            q.selectedIndex === index ? "selected" : ""
+            endGame ? "btn-gray" : q.selectedIndex === index ? "selected" : ""
           }`}
           onClick={() => handleSelect(q.id, index)}
         >
@@ -78,6 +89,7 @@ export default function Game() {
 
   function handleCheck() {
     console.log("Checking..");
+    setEndGame(true);
   }
 
   return (
