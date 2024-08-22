@@ -4,7 +4,23 @@ import { nanoid } from "nanoid";
 
 export default function Game() {
   const [questions, setQuestions] = React.useState([]);
+  const [playAgain, setPlayAgain] = React.useState(false);
   const [endGame, setEndGame] = React.useState(false);
+  const [correctAnswers, setCorrectAnswers] = React.useState(0);
+
+  const correctAnswerStyle = {
+    backgroundColor: "#94D7A2",
+    border: "none",
+  };
+
+  const wrongAnswerStyle = {
+    backgroundColor: "#F8BCBC",
+    opacity: 0.5,
+  };
+
+  const grayAnswerStyle = {
+    opacity: 0.5,
+  };
 
   React.useEffect(() => {
     async function fetchTrivia() {
@@ -30,7 +46,7 @@ export default function Game() {
     }
 
     fetchTrivia();
-  }, []);
+  }, [playAgain]);
 
   function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -40,6 +56,43 @@ export default function Game() {
       array[j] = temp;
     }
   }
+
+  const questionElements = questions.map((q) => {
+    const answerElements = q.allAnswers.map((answer, index) => {
+      const correctIndex = q.allAnswers.indexOf(q.correct_answer);
+
+      let style = null;
+      if (endGame) {
+        if (index === correctIndex) {
+          style = correctAnswerStyle; // Correct answer styling
+        } else if (q.selectedIndex === index) {
+          style = wrongAnswerStyle; // Incorrect selected answer styling
+        } else {
+          style = grayAnswerStyle; // Gray answer styling
+        }
+      }
+
+      return (
+        <button
+          key={index} // Use index as key since answers are shuffled
+          className={`btn-answer ${
+            q.selectedIndex === index ? "selected" : ""
+          }`}
+          style={style}
+          onClick={() => handleSelect(q.id, index)}
+        >
+          {decode(answer)}
+        </button>
+      );
+    });
+
+    return (
+      <div key={q.id} className="question">
+        <h2>{decode(q.question)}</h2>
+        {answerElements}
+      </div>
+    );
+  });
 
   function handleSelect(questionId, selectedIndex) {
     setQuestions((prevQuestions) =>
@@ -59,45 +112,40 @@ export default function Game() {
     );
   }
 
-  const questionElements = questions.map((q) => {
-    const answerElements = q.allAnswers.map((answer, index) => {
-      let correctIndex;
-      if (answer === q.correct_answer) {
-        correctIndex = index;
-      }
-
-      return (
-        <button
-          key={index} // Use index as key since answers are shuffled
-          className={`btn-answer ${
-            endGame ? "btn-gray" : q.selectedIndex === index ? "selected" : ""
-          }`}
-          onClick={() => handleSelect(q.id, index)}
-        >
-          {decode(answer)}
-        </button>
-      );
-    });
-
-    return (
-      <div key={q.id} className="question">
-        <h2>{decode(q.question)}</h2>
-        {answerElements}
-      </div>
-    );
-  });
-
   function handleCheck() {
     console.log("Checking..");
     setEndGame(true);
+    questions.forEach((q) => {
+      const correctIndex = q.allAnswers.indexOf(q.correct_answer);
+      if (q.selectedIndex === correctIndex) {
+        setCorrectAnswers((prevState) => prevState + 1);
+      }
+    });
+  }
+
+  function handlePlayAgain() {
+    setEndGame(false);
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) => ({ ...q, selectedIndex: -1 }))
+    );
+    setPlayAgain((prevState) => !prevState);
   }
 
   return (
     <section className="question-list">
       {questionElements}
-      <button className="btn btn-check" onClick={handleCheck}>
-        Check answers
-      </button>
+      {endGame ? (
+        <div className="play-again">
+          <h2>You scored {correctAnswers}/5 correct answers</h2>
+          <button className="btn btn-check" onClick={handlePlayAgain}>
+            Play again
+          </button>
+        </div>
+      ) : (
+        <button className="btn btn-check" onClick={handleCheck}>
+          Check answers
+        </button>
+      )}
     </section>
   );
 }
