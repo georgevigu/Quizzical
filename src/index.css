@@ -7,17 +7,23 @@ main {
   min-height: 100vh;
   background-color: #f5f7fb;
   color: #293264;
+  background-image: url("./images/top-blob.svg"),
+    url("./images/bottom-blob.svg");
+  background-repeat: no-repeat no-repeat;
+  background-position: 100% 0%, 0% 100%;
+}
+
+.main-menu {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  background-image: url("./images/top-blob.svg"), url("./images/bottom-blob.svg");
-  background-repeat: no-repeat no-repeat;
-  background-position: 100% 0%, 0% 100%;
 }
 
-h1 {
+h1,
+h2 {
   font-family: "Karla";
 }
 
@@ -28,6 +34,23 @@ p {
 .start {
   width: 200px;
   height: 50px;
+}
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  padding: 50px 200px;
+}
+
+.question {
+  margin-top: 2rem;
+}
+
+.btn-check {
+  height: 50px;
+  width: 200px;
+  margin-top: 3rem;
+  align-self: center;
 }
 
 /* Buttons */
@@ -42,4 +65,21 @@ p {
 
 .btn:active {
   box-shadow: inset 5px 5px 10px -2px rgba(0, 0, 0, 0.7);
+}
+
+.btn-answer {
+  color: #293264;
+  border: 2px solid #4d5b9e;
+  margin-right: 1rem;
+  margin-top: 10px;
+  height: 2rem;
+  padding: 0px 20px;
+  font-size: 1rem;
+  border-radius: 12px;
+  background-color: #f5f7fb;
+}
+
+.selected {
+  border: none;
+  background-color: #d6dbf5;
 }
